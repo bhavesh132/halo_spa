@@ -1,21 +1,17 @@
-import React from 'react'
+// src/components/Navbar.jsx
+import React from "react";
 
 const Navbar = () => {
   return (
-    <>
-    <div className='w-full p-1.5 flex pt-6 justify-between'>
+    <nav className="w-full py-4 shadow-md">
+      <div className="max-w-screen-xl px-4">
+        <div className="text-gray-900 text-xl font-semibold">
+          {/* Replace with an actual logo/image if needed */}
+          IT By Design
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-        <div className='logo ml-10 w-40 h-12'>
-            Some Logo Icon            
-        </div>   
-        
-        <div className='logo w-40 h-12'>
-            User Icon            
-        </div>   
-
-    </div>
-    </>
-  )
-}
-
-export default Navbar
+export default Navbar;

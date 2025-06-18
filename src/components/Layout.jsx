@@ -1,69 +1,31 @@
-import React from 'react'
-import Card from '../ui/Card'
-import Table from '../ui/Table'
+// src/components/Layout.jsx
+import React, { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Home from "../pages/Home";
+import AuthCallback from "../pages/AuthCallback";
+import authorizeHalo from "../api/auth/haloAuth";
+import { getToken } from "../utils/auth";
+import DashboardPage from "../pages/DashboardPage";
 
 const Layout = () => {
-    const cardData = [
-        {
-        heading: "custom Heading",
-        value: 200,
-        footer: "custom Footer"
-    },
-        {
-        heading: "custom Heading1",
-        value: 120,
-        footer: "custom Footer56"
-    },
-        {
-        heading: "custom Heading2",
-        value: 700,
-        footer: "custom Footer34"
-    },
-        {
-        heading: "custom Heading234",
-        value: 400,
-        footer: "custom Footer23"
-    },
-        {
-        heading: "custom Headingasd ",
-        value: 901,
-        footer: "custom Footer1"
-    },
-]
+  const location = useLocation();
 
+  useEffect(() => {
+    const isAuthCallback = location.pathname.startsWith("/auth");
+    const token = getToken();
 
-const tableData = [
-    { name: "John Michael" },
-    { name: "Alice Smith" },
-    { name: "Bob Johnson" },
-  ];
+    if (!isAuthCallback && !token) {
+      authorizeHalo();
+    }
+  }, [location]);
 
   return (
-    <div>
-      {/* Cards */}
-      <div className="flex flex-col items-center gap-4 mb-6">
-        <div className="flex gap-4">
-          {cardData.map((card, index) => (
-            <Card key={index} data={card} />
-          ))}
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className='flex justify-evenly m-auto'>
-      <Table data={tableData} />
-      <Table data={tableData} />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/auth/redirect" element={<AuthCallback />} />
+      <Route path="/dashboard/:id" element={<DashboardPage />} />
+    </Routes>
   );
 };
 
 export default Layout;
-
-
-
-
-
-
-
- 
