@@ -1,34 +1,37 @@
-// src/dashboards/CardSection.jsx
-const CardSection = ({ data, fields }) => {
+const CardSection = ({ data }) => {
   if (!data || data.length === 0) return null;
 
-  const computeSummary = (field) => {
-    const values = data
-      .map((row) => Number(row[field]))
-      .filter((n) => !isNaN(n));
-    if (field.toLowerCase().includes("avg")) {
-      const avg = values.reduce((a, b) => a + b, 0) / values.length;
-      return avg.toFixed(2);
-    }
-    const sum = values.reduce((a, b) => a + b, 0);
-    return sum;
-  };
+  // Compute total agents
+  const totalAgents = data.reduce((sum, item) => sum + Number(item.value), 0);
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {fields.map((field, idx) => (
-        <div
-          key={idx}
-          className="bg-blue-100 dark:bg-blue-800 p-4 rounded shadow"
-        >
-          <p className="text-sm uppercase text-blue-700 dark:text-white">
-            {field.replace(/_/g, " ")}
-          </p>
-          <p className="text-xl font-bold text-blue-900 dark:text-white">
-            {computeSummary(field)}
-          </p>
-        </div>
-      ))}
+    <div className="space-y-4">
+      {/* Total agents summary card */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col items-center text-center h-32">
+        <p className="text-sm text-gray-500 uppercase tracking-wide">
+          Total Agents
+        </p>
+        <p className="text-2xl font-semibold text-gray-800 mt-1">
+          {totalAgents}
+        </p>
+      </div>
+
+      {/* Status cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {data.map((item, idx) => (
+          <div
+            key={idx}
+            className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 flex flex-col items-center text-center transform transition duration-200 hover:scale-105 hover:shadow-md h-32"
+          >
+            <p className="text-sm text-gray-500 uppercase tracking-wide">
+              {item.label}
+            </p>
+            <p className="text-2xl font-semibold text-gray-800 mt-1">
+              {item.value}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
