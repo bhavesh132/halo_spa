@@ -11,18 +11,39 @@ const DashboardPage = () => {
   const { id } = useParams();
   const dashboard = DASHBOARDS.find((d) => d.id === id);
 
+  const POLL_INTERVAL = 300000; // 5 minutes in ms
+
   useEffect(() => {
+    let intervalId;
+
+    const fetchData = () => {
+      if (
+        dashboard.apiEndpoint &&
+        typeof dashboard.apiEndpoint === "function"
+      ) {
+        setLoading(true);
+        dashboard
+          .apiEndpoint()
+          .then((res) => setData(res))
+          .catch((err) => {
+            console.error(err);
+            setError("Failed to fetch dashboard data.");
+          })
+          .finally(() => setLoading(false));
+      }
+    };
+
+    fetchData(); // Fetch immediately when dashboard loads
+
+    // Set up polling
     if (dashboard.apiEndpoint && typeof dashboard.apiEndpoint === "function") {
-      setLoading(true);
-      dashboard
-        .apiEndpoint()
-        .then((res) => setData(res))
-        .catch((err) => {
-          console.error(err);
-          setError("Failed to fetch dashboard data.");
-        })
-        .finally(() => setLoading(false));
+      intervalId = setInterval(fetchData, POLL_INTERVAL);
     }
+
+    // Cleanup on unmount or dashboard change
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [dashboard]);
 
   if (!dashboard)
